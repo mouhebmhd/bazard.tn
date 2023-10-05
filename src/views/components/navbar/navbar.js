@@ -1,12 +1,20 @@
 import logo from '../../../assets/logo.png';
 import { BsPerson, BsCart2, BsSearch } from 'react-icons/bs';
+import {NavLink} from 'react-router-dom';
+
 function Navbar()
 {
+  const styleNavLink=({isActive})=>{
+    return {
+      color:isActive?"#FE441C":"gray",
+      borderBottom: isActive?"#FE441C 2px solid":"none",
+    }
+  }
    return (    
    <nav className="navbar navbar-expand-lg navbar-light bg-light p-2">
-   <a className="navbar-brand p-1" href="#">
+   <NavLink className="navbar-brand p-1" to="#">
      <img src={logo} width="50" height="50" alt="" />
-   </a>
+   </NavLink>
          <button
              className="navbar-toggler"
              type="button"
@@ -21,29 +29,29 @@ function Navbar()
    <div className="collapse navbar-collapse" id="navbarNav">
      <ul className="navbar-nav d-flex flex-row col mx-5 justify-content-center gap-4 ">
        <li className="nav-item mx-2 active">
-         <a className="nav-link" href="/">
+         <NavLink className="nav-link" style={styleNavLink} to="/home">
            Home
-         </a>
+         </NavLink>
        </li>
        <li className="nav-item mx-2">
-         <a className="nav-link" href="/about">
+         <NavLink className="nav-link" style={styleNavLink} to="/about">
            About
-         </a>
+         </NavLink>
        </li>
        <li className="nav-item mx-2">
-         <a className="nav-link" href="/products">
+         <NavLink className="nav-link" style={styleNavLink} to="/products">
            Products
-         </a>
+         </NavLink>
        </li>
        <li className="nav-item mx-2">
-         <a className="nav-link" href="/categories">
+         <NavLink className="nav-link" style={styleNavLink} to="/categories">
            Categories
-         </a>
+         </NavLink>
        </li>
        <li className="nav-item mx-2">
-         <a className="nav-link" href="/contact">
+         <NavLink className="nav-link" style={styleNavLink} to="/contact">
            Contact Us
-         </a>
+         </NavLink>
        </li>
      </ul>
      <div className="avatar-container d-flex gap-3">

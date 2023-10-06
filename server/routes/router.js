@@ -61,6 +61,10 @@ route.get('/product/getProductById/:id',(req,res)=>{
 route.get('/product/getProductsByCategoryId/:categoryId',(req,res)=>{
    controller.getProductsByCategoryID(req,res);
 });
+//get all the ordered products of an user AKA cart items
+route.get('/cart/getCartItems/:customerId',(req,res)=>{
+   controller.getCartItems(req,res)
+})
 /************Categories routes*************/
 //get all categories
 route.get('/categories/getAllCategories/',(req,res)=>{
@@ -70,6 +74,10 @@ route.get('/categories/getAllCategories/',(req,res)=>{
 route.get('/categories/getCategoryById/:id',(req,res)=>{
    controller.getCategoryById(req,res);
 });
+/************Categories routes*************/
+route.post('/cart/addToCart/',(req,res)=>{
+   controller.addToCart(req,res);
+})
 
 /****************Delete routes***********************/
 /************Agent routes*************/

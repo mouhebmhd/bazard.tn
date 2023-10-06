@@ -1,10 +1,10 @@
 var mongoose=require("mongoose");
 var schema=new mongoose.Schema({
-    clientID:{
+    customerId:{
         type:String,
         required:true
     },
-    productID:{
+    productId:{
         type:String,
         required:true
     },
@@ -14,6 +14,10 @@ var schema=new mongoose.Schema({
         required:true
     },
     subTotalPrice:{
+        type:String,
+        required:true
+    },
+    orderId:{
         type:String,
         required:true
     }

@@ -9,6 +9,8 @@ const product=require('../model/product');
 const category=require('../model/category');
 const jwt=require('jsonwebtoken');
 var controller={}
+var cart =require('../model/cart');
+const { default: axios } = require('axios');
 
 
 function formatDate(date) {
@@ -86,7 +88,6 @@ controller.loginAdmin=(req,res)=>{
 }
 //customer login 
 controller.loginCustomer=(req,res)=>{
-  console.log(req.body)
   customer.findOne({email:req.body.email})
   .then(selectedCustomer=>{
     if (!selectedCustomer){
@@ -186,7 +187,12 @@ controller.getCategoryById=(req,res)=>{
     res.send('error while trying to find a category')
   })
 }
-
+/*****Agent Get Routes*********/
+controller.getCartItems=(req,res)=>{
+  cart.find({$and:[{customerId:req.params.customerId},{orderId:'no OrderID Yet'}]})
+  .then(selectedItems=>{res.send(selectedItems)})
+  .catch(error=>{res.send(error)})
+}
 
 /***************Delete Data Functions**************************************/
 /*******Agents Delete Api ********/
@@ -335,6 +341,59 @@ controller.updateCategory=(req,res)=>{
 
 
 /************************POST data functions*************************/
+/********SubCommand Register************ */
+controller.addToCart = (req, res) => {
+  console.log(req.body);
+  axios.get('http://localhost:3030/product/getProductById/' + req.body.productId)
+    .then(response => {
+      const { productId, customerId } = req.body;
+      const productCount = 1; // Initial product count
+      
+      // Check if an item with the same customerId, productId, and orderId exists
+      cart.findOne({
+        productId,
+        customerId,
+        orderId: 'no OrderID Yet'
+      })
+        .then(existingCartItem => {
+          if (existingCartItem) {
+            // If the item exists, increment the category by 1
+            existingCartItem.productCount = ''+(parseInt(existingCartItem.productCount)+1);
+            existingCartItem.save()
+              .then(savedItem => {
+                res.send('Product quantity updated successfully ' + savedItem);
+              })
+              .catch(error => {
+                res.send(error);
+              });
+          } else {
+            // If the item does not exist, create a new cart item
+            const cartItem = new cart({
+              productId,
+              customerId,
+              productCount,
+              subTotalPrice: response.data.unitPrice,
+              orderId: 'no OrderID Yet'
+            });
+
+            cartItem.save()
+              .then(savedItem => {
+                res.send('Product saved successfully ' + savedItem);
+              })
+              .catch(error => {
+                res.send(error);
+              });
+          }
+        })
+        .catch(error => {
+          res.send(error);
+        });
+    })
+    .catch(error => {
+      res.send(error);
+    });
+};
+
 /********Customer Register************ */
 controller.customerRegister=(req,res)=>{
   const newCustomer=new customer({

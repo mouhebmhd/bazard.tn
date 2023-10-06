@@ -23,14 +23,15 @@ function Login()
         document.getElementsByClassName('passwordFeedBack')[0].classList.remove('d-none')
         document.getElementsByClassName('passwordFeedBack')[0].textContent=response.data;  
       }
-      else
+      else if(response.data._id)
       {
-        localStorage.setItem('currentUser',response.data);
-        window.location='/home';
+        localStorage.clear()
+        localStorage.setItem('currentUser',response.data._id);
+        window.location='/home'
       }
     })
     .catch(error=>{
-      console.log('an error has occured when trying to login customer ')
+      console.log(error)
     })
   }
   
@@ -55,11 +56,11 @@ function Login()
                   <div className="d-none passwordFeedBack"></div>
                 </div>
                 <div className="mt-3 text-center">
-                    <button type="button" tabIndex="1" className="btn btn-primary btn-block  loginAccount" onClick={loginFunction} ><i className="bi  bi-box-arrow-right"> </i> Se Connecter </button>
+                    <button type="button" tabIndex="3" accessKey="a" className="btn btn-primary btn-block  loginAccount" onClick={loginFunction} ><i className="bi  bi-box-arrow-right"> </i> Se Connecter </button>
                 </div>
                
                 <div className="mb-2 mt-3 text-center">
-                   <NavLink to='/register'> <button tabIndex="2" href="" className="btn createAccount" ><i className="bi  bi-person-plus-fill"> </i>Créer un compte </button></NavLink>
+                   <NavLink to='/register'> <button tabIndex="4" href="" className="btn createAccount" ><i className="bi  bi-person-plus-fill"> </i>Créer un compte </button></NavLink>
                 </div>
                
               </form>

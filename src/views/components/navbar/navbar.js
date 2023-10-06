@@ -1,14 +1,24 @@
+import { useEffect, useState } from 'react';
 import logo from '../../../assets/logo.png';
 import { BsPerson, BsCart2, BsSearch } from 'react-icons/bs';
 import {NavLink} from 'react-router-dom';
-
+import axios from 'axios';
 function Navbar()
-{
+{ 
+  const [items,setItems]=useState()
+  useEffect(()=>{
+      axios.get('http://localhost:3030/cart/getCartItems/'+localStorage.getItem('currentUser'))
+      .then(response=>{
+        setItems(response.data.length)
+      })
+      .catch(error=>{console.log(error)})
+    })
   const styleNavLink=({isActive})=>{
     return {
       color:isActive?"#FE441C":"gray",
       borderBottom: isActive?"#FE441C 2px solid":"none",
     }
+   
   }
    return (    
    <nav className="navbar navbar-expand-lg navbar-light bg-light p-2">
@@ -34,19 +44,16 @@ function Navbar()
          </NavLink>
        </li>
        <li className="nav-item mx-2">
-         <NavLink className="nav-link" style={styleNavLink} to="/about">
-           About
-         </NavLink>
-       </li>
-       <li className="nav-item mx-2">
          <NavLink className="nav-link" style={styleNavLink} to="/products">
            Products
          </NavLink>
        </li>
        <li className="nav-item mx-2">
-         <NavLink className="nav-link" style={styleNavLink} to="/categories">
-           Categories
+         <NavLink className="nav-link" style={styleNavLink} to="/orders">
+           My Orders
          </NavLink>
+       </li>
+       <li className="nav-item mx-2">
        </li>
        <li className="nav-item mx-2">
          <NavLink className="nav-link" style={styleNavLink} to="/contact">
@@ -56,7 +63,7 @@ function Navbar()
      </ul>
      <div className="avatar-container d-flex gap-3">
        <div className="col h3"><BsSearch></BsSearch></div>
-       <div className="col h3"><span className='cartCount'>0</span><BsCart2></BsCart2> </div>
+       <div className="col h3"><span className='cartCount'>{items}</span><BsCart2></BsCart2> </div>
        <div className="col h3"><BsPerson></BsPerson></div>
      </div>
    </div>

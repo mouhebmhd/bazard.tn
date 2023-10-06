@@ -52,3 +52,14 @@
         transform: rotate(-10deg);
     }
 }
+.card-img-top
+{
+width: 16rem;
+height: 16rem;
+margin: 2px auto;
+}
+.addToCart
+{
+    background-color: #FE441C;
+    border: none;
+}

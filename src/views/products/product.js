@@ -91,7 +91,7 @@ class Product extends Component {
                     }}
                     key={category._id}
                   >
-                    <img src={this.state.categoriesIcons[index]} alt='' className='categoryIcon mx-2' />
+                    <img src={this.state.categoriesIcons[index]}  className='categoryIcon mx-2' />
                     {category.categoryName}
                   </div>
                 );
@@ -111,8 +111,8 @@ class Product extends Component {
                           <span className='fw-bold'>Price </span> {product.unitPrice} DT
                         </p>
                         <div className='col d-flex justify-content-center'>
-                          <button className='btn btn-primary d-block  addToCart' onClick={()=>{this.addToCart(product._id)}}>
-                            <AiOutlineShoppingCart className='h4'></AiOutlineShoppingCart> Add to cart
+                          <button className='btn btn-primary d-flex  addToCart align-items-center ' onClick={()=>{this.addToCart(product._id)}}>
+                            <AiOutlineShoppingCart className='h4 mt-2 mx-2'></AiOutlineShoppingCart> Add to cart
                           </button>
                         </div>
                       </div>

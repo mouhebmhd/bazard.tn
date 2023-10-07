@@ -1,20 +1,4 @@
-.nav-item
-{
-    font-weight: 500;
-}
-.cartCount
-{
-    background-color: #FE441C;
-    height: 15px;
-    width: 15px;
-    color: white;
-    border-radius: 50%;
-    position: absolute;
-    font-size: 50%;
-    right: 50px;
-    text-align: center;
-    top: 20px;
-}
+
 .landingSpace{
     background-image: url('../../assets/bg-container.jpg');
     background-size: cover;
@@ -27,7 +11,7 @@
 }
 .allKindsSlogan
 {
-    color: rgb(254, 68, 28) !important;
+    color: #fe441c !important;
     font-size: 1.5em;
 }
 .chooseSlogan

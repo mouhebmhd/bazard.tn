@@ -3,6 +3,7 @@ import logo from '../../../assets/logo.png';
 import { BsPerson, BsCart2, BsSearch } from 'react-icons/bs';
 import {NavLink} from 'react-router-dom';
 import axios from 'axios';
+import './navbar.css'
 function Navbar()
 { 
   const [items,setItems]=useState()
@@ -54,17 +55,14 @@ function Navbar()
          </NavLink>
        </li>
        <li className="nav-item mx-2">
-       </li>
-       <li className="nav-item mx-2">
          <NavLink className="nav-link" style={styleNavLink} to="/contact">
            Contact Us
          </NavLink>
        </li>
      </ul>
      <div className="avatar-container d-flex gap-3">
-       <div className="col h3"><BsSearch></BsSearch></div>
-       <div className="col h3"><span className='cartCount'>{items}</span><BsCart2></BsCart2> </div>
-       <div className="col h3"><BsPerson></BsPerson></div>
+       <NavLink style={styleNavLink} className="shopCartIcon" to='/shopCart'> <div className="col h3"><span className='cartCount '>{items}</span><BsCart2></BsCart2> </div></NavLink>
+       <NavLink style={styleNavLink} className="profilIcon" to="/editProfil"><div className="col h3"><BsPerson></BsPerson></div></NavLink>
      </div>
    </div>
  </nav>)

@@ -63,3 +63,8 @@ margin: 2px auto;
     background-color: #FE441C;
     border: none;
 }
+.addToCart:hover
+{
+    background-color: #FE441C;
+    box-shadow: 3px 5px 10px #c73616 ;
+}

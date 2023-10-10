@@ -4,3 +4,31 @@
     height: 10em;
     border-radius: 15px;
 }
+th{
+    color: #FE441C !important;
+}
+.modifyCount
+{
+ font-size: 2em; 
+}
+.modifyCount:hover
+{
+ border-radius: 50%;
+ color: white !important;
+}
+.minusOne:hover
+{
+    background-color: #FE441C;
+}
+.plusOne:hover
+{
+    background-color: green;
+}
+.minusOne
+{
+    color: #FE441C;
+}
+.plusOne
+{
+    color: rgba(0, 128, 0, 0.688);
+}

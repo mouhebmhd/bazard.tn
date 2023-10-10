@@ -4,6 +4,7 @@ import Home from "./views/homePage/homePage";
 import Login from "./views/login/login";
 import ShopCart from './views/cartPage/cartPage'
 import Register from "./views/signIn/signIn";
+import OrderPage from './views/order/order'
 import { Routes, Route } from "react-router-dom";
 import Products from './views/products/product' ;
 function Routers() {
@@ -17,6 +18,7 @@ function Routers() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/shopCart" element={<ShopCart />} />
+          <Route path="/orders" element={<OrderPage />} />
         </Routes>
     </>
   );

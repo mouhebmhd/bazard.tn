@@ -46,7 +46,7 @@ function ShoppingCart () {
     return (
       <React.Fragment>
         <Navbar />
-        <div className='container cartPageContainer p-2 noProductContainer d-flex d-none  align-items-center flex-column'>
+        <div className='container cartPageContainer p-2 noProductContainer d-flex   align-items-center flex-column'>
           <h2 className=' noProductMessage '>No products in your cart</h2>
           <Link to='/products'>
             <button className='btn addProuctBtn'>Add Products to Cart</button>

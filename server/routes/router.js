@@ -78,6 +78,10 @@ route.get('/categories/getCategoryById/:id',(req,res)=>{
 route.post('/cart/addToCart/',(req,res)=>{
    controller.addToCart(req,res);
 })
+/************Order routes*************/
+route.get('/order/getAllOrders/:customerID',(req,res)=>
+{controller.getAllOrders(req,res);
+})
 
 /****************Delete routes***********************/
 /************Agent routes*************/
@@ -97,6 +101,10 @@ route.delete('/agent/deleteAgentPermanently/:id',(req,res)=>{
 //delete Category
 route.delete('/categories/deleteCategory/:id',(req,res)=>{
    controller.deleteCategory(req,res);
+})
+/*************Cart routes***********/
+route.delete('/cart/removeItem/:itemID',(req,res)=>{
+   controller.removeCartItem(req,res);
 })
 
 
@@ -134,5 +142,17 @@ route.put('/product/updateProduct/',(req,res)=>{
 route.put('/categories/updateOne/',(req,res)=>{
    controller.updateCategory(req,res);
 })
-
+/************Cart  routes*************/
+//update cart item count
+route.put('/cart/updateItemCount/',(req,res)=>{
+   controller.updateItemCount(req,res);
+})
+//validate the whole cart 
+route.put('/cart/validateCart/',(req,res)=>{
+   controller.validateCart(req,res);
+ })
+ /************Order  routes*************/
+route.put('/order/updateOrderStatus/',(req,res)=>{
+   controller.updateOrderStatus(req,res)
+})
 module.exports=route;

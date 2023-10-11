@@ -82,7 +82,10 @@ route.post('/cart/addToCart/',(req,res)=>{
 route.get('/order/getAllOrders/:customerID',(req,res)=>
 {controller.getAllOrders(req,res);
 })
-
+//get the list of products of a custom order
+route.get('/order/getOrderItems/:orderID',(req,res)=>{
+   controller.getOrderItems(req,res);
+})
 /****************Delete routes***********************/
 /************Agent routes*************/
 //delete agent

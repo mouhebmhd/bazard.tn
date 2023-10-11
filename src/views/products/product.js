@@ -45,7 +45,15 @@ class Product extends Component {
       });
     console.log(categoryID);
   }
-
+   generateSearchResult(event)
+  {    
+    const request=event.currentTarget.value.toLowerCase();
+    console.log(request)
+    const searchedProducts=this.state.products.filter(product=>{
+      return product.productName.toLowerCase().indexOf(request)>-1
+    })
+    this.setState({products:searchedProducts})
+  }
   componentDidMount() {
     axios
       .get('http://localhost:3030/categories/getAllCategories/')
@@ -98,6 +106,12 @@ class Product extends Component {
               })}
             </div>
             <h2 className='text-center productsTitle'>Explore Our Products</h2>
+            <div className="container-fluid m-2">
+              <div className="row d-flex justify-content-center">
+                <div className="searchBar col-sm-12 col-md-6 col-xl-4 col-lg-4">      
+                <input className="form-control mr-sm-2 searchBarInput" type="search" placeholder="Search a product here" aria-label="Search" onChange={event=>{this.generateSearchResult(event)}} /></div>
+              </div>
+            </div>
             <div className='container-fluid m-0 p-0'>
               <div className='row justify-content-center gap-3'>
                 {this.state.products.map((product) => {

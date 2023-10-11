@@ -1,18 +1,16 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import Navbar from '../components/navbar/navbar';
+import { Link } from 'react-router-dom';
 function Order(){
+   
+    
     function updateOrderStatus(orderID,newOrderStatus)
     {
         axios.put('http://localhost:3030/order/updateOrderStatus/',{orderID,newOrderStatus})
         .then(response=>{
             console.log(response);
-            orders.map(order=>{ 
-                if(order._id==orderID)
-                {
-                    order.orderStatus=newOrderStatus;
-                }
-            })
+            window.location.reload( )
         })
         .catch(error=>{
             console.log(error)
@@ -42,7 +40,7 @@ function Order(){
     }
     function isValidated(status)
     {
-        if(status!='waiting')
+        if((status!='waiting'))
         {
             return 'd-none'
         }
@@ -84,8 +82,8 @@ function Order(){
                 <td>{order.orderStatus}</td>
                 <td>{order.shippingAdress}</td>
                 <td>{order.totalPrice}</td>
-                <td className='d-flex gap-1'>
-                    <button className="btn btn-outline-warning">Details</button>
+                <td className='d-flex gap-1'> 
+                    <Link to={'/customOrder/'+order._id}> <button className="btn btn-outline-warning" data-toggle="modal" data-target="#exampleModal"  >Details</button></Link>
                     <button className={isShipped(order.orderStatus,'btn-outline-success')} onClick={()=>{updateOrderStatus(order._id,'shipped')}}>Mark as shipped</button>
                     <button className={isReceivedByTheCustomer(order.orderStatus,'btn-outline-danger')} onClick={()=>{updateOrderStatus(order._id,'not shipped')}}>Mark as not shipped</button>
                     <button className={isValidated(order.orderStatus)} onClick={()=>{updateOrderStatus(order._id,'canceled')}}>Cancel order</button>
@@ -95,7 +93,10 @@ function Order(){
 
    
   </tbody>
-</table></>)
+</table>
+
+
+</>)
     }
     else 
     {return (

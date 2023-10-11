@@ -175,6 +175,24 @@ controller.getProductsByCategoryID = (req, res) => {
       );
     });
 };
+//get order items
+controller.getOrderItems = (req, res) => {
+  cart.find({ orderId: req.params.orderID })
+    .then(async (items) => {
+       const productInfoPromises = items.map(async (item) => {
+        // Make an API request to get product information using item.productId
+        const productInfo = await axios.get(`http://localhost:3030/product/getProductById/${item.productId}`);
+        return productInfo.data;
+      });
+      // Wait for all API requests to complete
+      const productInfoArray = await Promise.all(productInfoPromises);
+
+      res.json(productInfoArray); 
+    })
+    .catch((error) => {
+      res.status(500).json({ error: 'An error occurred while fetching order items.' });
+    });
+};
 /*******Category Get Functions ********/
 //get all categories
 controller.getAllCategories = (req, res) => {

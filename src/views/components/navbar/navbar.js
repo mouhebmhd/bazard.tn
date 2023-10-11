@@ -13,7 +13,7 @@ function Navbar()
         setItems(response.data.length)
       })
       .catch(error=>{console.log(error)})
-    })
+    },[items])
   const styleNavLink=({isActive})=>{
     return {
       color:isActive?"#FE441C":"gray",
@@ -62,7 +62,7 @@ function Navbar()
      </ul>
      <div className="avatar-container d-flex gap-3">
        <NavLink style={styleNavLink} className="shopCartIcon" to='/shopCart'> <div className="col h3"><span className='cartCount '>{items}</span><BsCart2></BsCart2> </div></NavLink>
-       <NavLink style={styleNavLink} className="profilIcon" to="/editProfil"><div className="col h3"><BsPerson></BsPerson></div></NavLink>
+       <NavLink style={styleNavLink} className="profilIcon" to={"/editProfil/"+localStorage.getItem('currentUser')}><div className="col h3"><BsPerson></BsPerson></div></NavLink>
      </div>
    </div>
  </nav>)

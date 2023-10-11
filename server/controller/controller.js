@@ -115,6 +115,16 @@ controller.loginCustomer = (req, res) => {
 };
 
 /***************Get Data Functions**************************************/
+/**get cusotmer profilInfo */
+controller.getCustomerProfilInfo=(req,res)=>{
+  customer.findById(req.params.customerID)
+  .then(user=>{
+    res.send(user)
+  })
+  .catch(error=>{
+    res.send(error)
+  })
+}
 /*******Agent Get Functions ********/
 //get all agents
 controller.getAllAgents = (req, res) => {
@@ -435,44 +445,49 @@ controller.updateItemCount = (req, res) => {
 };
 //validate Cart
 controller.validateCart = (req, res) => {
-  const newOrder = new order({
-    customerId: req.body.customerID,
-    orderDate: getDate(),
-    orderStatus: "waiting",
-    shippingAdress: "empty",
-    totalPrice: 0,
-  });
-  cart
-    .find({
-      $and: [
-        { customerId: req.body.customerID },
-        { orderId: "no OrderID Yet" },
-      ],
-    })
-    .then((items) => {
-      items.map((item) => {
-        newOrder.totalPrice += parseFloat(item.subTotalPrice);
-      });
-    })
-    .catch((error) => {
-      console.log(error);
+  customer.findById(req.body.customerID)
+  .then(currentUser=>{
+    const newOrder = new order({
+      customerId: req.body.customerID,
+      orderDate: getDate(),
+      orderStatus: "waiting",
+      shippingAdress: currentUser.regionAddress+' '+currentUser.cityAddress+' '+currentUser.postalCode,
+      totalPrice:0,
     });
-  cart
-    .updateMany({ customerId: req.body.customerID }, { orderId: newOrder._id })
-    .then((updatedItems) => {
-      newOrder
-        .save()
-        .then(() => {
-          res.send(updatedItems);
-        })
-        .catch((error) => {
-          console.send(error);
+    cart
+      .find({
+        $and: [
+          { customerId: req.body.customerID },
+          { orderId: "no OrderID Yet" },
+        ],
+      })
+      .then((items) => {
+        items.map((item) => {
+          console.log(item)
+          newOrder.totalPrice = (parseFloat(newOrder.totalPrice)+parseFloat(item.subTotalPrice)*parseFloat(item.productCount)).toFixed(2);
         });
-    })
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    cart
+      .updateMany({ customerId: req.body.customerID }, { orderId: newOrder._id })
+      .then((updatedItems) => {
+        newOrder
+          .save()
+          .then(() => {
+            res.send(updatedItems);
+          })
+          .catch((error) => {
+            console.send(error);
+          });
+      })
+  
+      .catch((error) => {
+        res.send(error);
+      });
+  })
 
-    .catch((error) => {
-      res.send(error);
-    });
 };
 /************Order Update Functions**********/
 //update orderStatus

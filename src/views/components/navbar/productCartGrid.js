@@ -70,7 +70,7 @@ function validateCommand(){
                     <p id={item._id} className="d-inline">{item.productCount}</p> Piece
                     <IoIosAddCircleOutline className="modifyCount plusOne" onClick={() => { updateCount(item._id,1) }}></IoIosAddCircleOutline>
                   </td>
-                  <td>{parseFloat(item.productCount) * parseFloat(props.products[index].unitPrice)} DT</td>
+                  <td>{(parseFloat(item.productCount) * parseFloat(props.products[index].unitPrice)).toFixed(2)} DT</td>
                   <td><button className="btn removeItemButton  btn-outline-danger" onClick={() => { removeItem(item._id) }}><RiDeleteBin6Line className="m-0 mx-1 h4 "></RiDeleteBin6Line>Remove Item</button></td>
                 </tr>
               })}

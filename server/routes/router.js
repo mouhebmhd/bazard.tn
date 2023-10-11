@@ -48,6 +48,10 @@ route.get('/agent/getAllAgents/',(req,res)=>{
 route.get('/agent/getById/:id',(req,res)=>{
    controller.getAgentById(req,res);
 });
+//get customer info
+route.get('/customer/getProfilInfo/:customerID',(req,res)=>{
+   controller.getCustomerProfilInfo(req,res);
+})
 /************Product routes*************/
 //get all products
 route.get('/product/getAllProducts/',(req,res)=>{

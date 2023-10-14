@@ -2,3 +2,18 @@
 {
     color: #FE441C;
 }
+.profilPhotoContainer
+{
+    width: 9em;
+    height: 9em;
+    border-radius: 50%;
+    background-color: #FE441C;
+    background-position: center center;
+    background-size: contain;
+}
+label
+{
+    color: #FE441C;
+    font-weight: bold;
+    
+}

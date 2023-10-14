@@ -13,12 +13,12 @@ route.post('/agent/login/',(req,res)=>{
 route.post(('/admin/login/',(req,res)=>{
    controller.loginAdmin(req,res);
 }));
-
-/****************POST routes***********************/
-/*************Customer Post Routes*******/
+//customer login
 route.post('/customer/login/',(req,res)=>{
    controller.loginCustomer(req,res);
 })
+/****************POST routes***********************/
+
 /************Customer POST routes*************/
 //add a new customer
 route.post('/customer/register/',(req,res)=>{
@@ -138,6 +138,11 @@ route.put('/agent/updateProfile/',(req,res)=>{
 //update admin profile
 route.put('/admin/updateProfile/',(req,res)=>{
    controller.updateAdminProfile(req,res);
+});
+/**********Customer update Profil***************/
+//update customer profile
+route.put('/customer/updateProfile/',(req,res)=>{
+   controller.updateCustomerProfile(req,res);
 });
 /*********Product Update Functions*************/
 //update product 

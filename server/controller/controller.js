@@ -39,12 +39,28 @@ controller.loginAgent = (req, res) => {
         );
         if (trusted == true) {
           if (selectedAgent.etatCompte == "active") {
+            const SECRET_KEY = process.env.SECRET_KEY;
+            const token = jwt.sign(
+              {
+                user_id: selectedAgent._id, // Change this to the actual user ID field in your agent model
+                username: selectedAgent.username,
+                email: selectedAgent.email,
+              },
+              SECRET_KEY,
+              { expiresIn: "1h" } // Token expiration time (adjust as needed)
+            );
+  
+            // Set the token in a cookie
+            res.cookie("authToken", token, { httpOnly: true });
             res.send(selectedAgent);
           } else if (selectedAgent.etatCompte == "blocked") {
             res.send("you account has been blocked by the admin");
           } else if (selectedAgent.etatCompte == "deleted") {
             res.send("you account has been deleted temporarly by the admin");
-          }
+          } 
+        else if (selectedAgent.etatCompte == "suspended") {
+          res.send("you account has been suspended temporarly by the admin");
+        }
         } else {
           res.send("your password is incorrect");
         }
@@ -317,6 +333,26 @@ controller.removeCartItem = (req, res) => {
 /***************Update Functions**************************************/
 /*********Admin Update Functions*************/
 //update agent profile
+controller.updateCustomerProfile = (req, res) => {
+  customer
+    .findByIdAndUpdate(req.body.id, {
+      name: req.body.customerName,
+      email: req.body.customerEmail,
+      avatar: req.body.customerPhoto,
+      regionAddress: req.body.customerAddressRegion,
+      cityAddress: req.body.customerAddressCity,
+      postalCode: req.body.customerAddressPostalCode,
+      phone: req.body.customerPhoneNumber,
+    })
+    .then((updatedCustomer) => {
+      res.send(updatedCustomer);
+    })
+    .catch((error) => {
+      res.send(error);
+    });
+};
+//customer update Profil 
+//update agent profile
 controller.updateAdminProfile = (req, res) => {
   admin
     .findByIdAndUpdate(req.body.id, {
@@ -587,16 +623,16 @@ controller.customerRegister = (req, res) => {
 /******** Agent Post Functions********/
 //add a new agent
 controller.addNewAgent = (req, res) => {
-  const newAgent = new agent({
-    name: req.body.name,
-    email: req.body.email,
-    avatar: req.body.avatar,
-    regionAddress: req.body.regionAddress,
-    cityAddress: req.body.cityAddress,
-    postalCode: req.body.postalCode,
-    phone: req.body.phone,
-    etatCompte: "active",
-    password: bcrypt.hashSync(req.body.password, 10),
+   const newAgent = new agent({
+    name: req.body.customerName,
+    email: req.body.customerEmail,
+    avatar: req.body.customerPhoto,
+    regionAddress: req.body.customerAddressRegion,
+    cityAddress: req.body.customerAddressCity,
+    postalCode: req.body.customerAddressPostalCode,
+    phone: req.body.customerPhoneNumber,
+    etatCompte: "suspended",
+    password: bcrypt.hashSync(req.body.customerPassword, 10),
   });
   newAgent
     .save()
@@ -605,7 +641,7 @@ controller.addNewAgent = (req, res) => {
     })
     .catch((error) => {
       res.send(error);
-    });
+    }); 
 };
 /*********Product Post Functions*******/
 //add new product

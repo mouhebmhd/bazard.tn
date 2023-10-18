@@ -49,11 +49,28 @@ function Navbar()
            Products
          </NavLink>
        </li>
+       {
+        localStorage.getItem('role')=='customer' &&
+       
        <li className="nav-item mx-2">
          <NavLink className="nav-link" style={styleNavLink} to="/orders">
            My Orders
          </NavLink>
-       </li>
+       </li>}
+       {
+        (localStorage.getItem('role')=='admin') &&        <li className="nav-item mx-2">
+        <NavLink className="nav-link" style={styleNavLink} to="/agents/manage">
+          Agents
+        </NavLink>
+      </li>
+       }
+              {
+        (localStorage.getItem('role')=='admin' ||localStorage.getItem('role')=='agent' ) &&        <li className="nav-item mx-2">
+        <NavLink className="nav-link" style={styleNavLink} to="/orders/manage">
+          Orders
+        </NavLink>
+      </li>
+       }
        <li className="nav-item mx-2">
          <NavLink className="nav-link" style={styleNavLink} to="/contact">
            Contact Us
@@ -61,9 +78,10 @@ function Navbar()
        </li>
      </ul>
      <div className="avatar-container d-flex gap-3">
+      {(localStorage.getItem('role')=='customer') && 
        <NavLink style={styleNavLink} className="shopCartIcon" to='/shopCart'> <div className="col h3"><span className='cartCount '>{items}</span><BsCart2></BsCart2> </div></NavLink>
-       <NavLink style={styleNavLink} className="profilIcon" to={"/editProfil/"+localStorage.getItem('currentUser')}><div className="col h3"><BsPerson></BsPerson></div></NavLink>
-     </div>
+       &&<NavLink style={styleNavLink} className="profilIcon" to={"/editProfil/"+localStorage.getItem('currentUser')}><div className="col h3"><BsPerson></BsPerson></div></NavLink>
+      }</div>
    </div>
  </nav>)
 }

@@ -11,7 +11,11 @@ const jwt = require("jsonwebtoken");
 var controller = {};
 var cart = require("../model/cart");
 const { default: axios } = require("axios");
-
+const { response } = require("express");
+function createToken(data)
+{
+return   jwt.sign({user:data},process.env.ACCESS_SECRET+data._id,{expiresIn:"24h"});
+}
 function formatDate(date) {
   const day = String(date.getDate()).padStart(2, "0");
   const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
@@ -24,10 +28,122 @@ function getDate() {
   const formattedDate = formatDate(today);
   return formattedDate;
 }
+//get the exact role of an user
+controller.getExactRole=(req,res)=>{
+  customer.findById(req.params.id)
+  .then(isCustomer=>{
+    if(isCustomer)
+    {
+      res.send('customer')
+    }
+    else
+    {
+      agent.findById(req.params.id)
+      .then(isAgent=>{
+        if(isAgent)
+        {
+          res.send('agent')
+        }
+        else
+        {
+          admin.findById(req.params.id)
+          .then(isAdmin=>{
+            if(isAdmin)
+            {
+              res.send('admin');
+            }
+            else
+            {
+              res.send('has no role')
+            }
+          })
+          .catch(()=>{
+            res.send('has no role')
+          })
+        }
+      })
+      .catch(()=>{
+        res.send('has no role')
+      })
+    }
+  })
+  .catch(()=>{
+    res.send('has no role')
+  })
+}
 /***************login Functions**************************************/
+//admin login
+const loginAdmin = async function (email, password) {
+  try {
+    const selectedAgent = await admin.findOne({ email: email });
+
+    if (!selectedAgent) {
+      return "no account found with this email";
+    } else {
+      const trusted = bcrypt.compareSync(password, selectedAgent.password);
+      if (trusted == true) {
+        return selectedAgent;
+      } else {
+        return 'You are trying to connect as an admin. Please check your password.';
+      }
+    }
+  } catch (error) {
+    return 'error';
+  }
+};
+
+//customer login
+controller.loginCustomer = (req, res) => {
+  customer
+    .findOne({ email: req.body.email })
+    .then((selectedCustomer) => {
+      if (!selectedCustomer) {
+        res.send("no account found with this email ");
+      } else {
+        var trusted = bcrypt.compareSync(
+          req.body.password,
+          selectedCustomer.password
+        );
+        if (trusted) {
+          const token = createToken(selectedCustomer);
+
+          // Set the token in a cookie
+          res.cookie("authToken", token,{httpOnly:true,maxAge:60*1000});
+          res.send(selectedCustomer);
+        } else {
+          res.send("your password is incorrect");
+        }
+      }
+    })
+    .catch((error) => {
+      res.send(error);
+    });
+};
+
 //agent login
-controller.loginAgent = (req, res) => {
-  agent
+controller.loginAgent = async (req, res) => {
+  const selectedAgent=await loginAdmin(req.body.email,req.body.password);
+  if(typeof(selectedAgent)=='object')
+  {
+    var trusted = bcrypt.compareSync(
+      req.body.password,
+      selectedAgent.password
+    );
+    if (trusted == true) {
+        const token=createToken(selectedAgent);
+        // Set the token in a cookie
+        res.cookie("authToken", token, { httpOnly: true ,maxAge:1000*60});
+        res.send(selectedAgent);
+      }
+      else
+      {
+        res.send('your password is incorrect')
+      }
+  }
+  else if (selectedAgent=='You are trying to connect as an admin. Please check your password.')
+  {res.send(selectedAgent)}
+  else {
+agent
     .findOne({ email: req.body.email })
     .then((selectedAgent) => {
       if (!selectedAgent) {
@@ -38,20 +154,11 @@ controller.loginAgent = (req, res) => {
           selectedAgent.password
         );
         if (trusted == true) {
-          if (selectedAgent.etatCompte == "active") {
-            const SECRET_KEY = process.env.SECRET_KEY;
-            const token = jwt.sign(
-              {
-                user_id: selectedAgent._id, // Change this to the actual user ID field in your agent model
-                username: selectedAgent.username,
-                email: selectedAgent.email,
-              },
-              SECRET_KEY,
-              { expiresIn: "1h" } // Token expiration time (adjust as needed)
-            );
-  
+          if (selectedAgent.etatCompte == "active") {            
+            const token=createToken(selectedAgent);
+            console.log(token)
             // Set the token in a cookie
-            res.cookie("authToken", token, { httpOnly: true });
+            res.cookie("authToken", token, { httpOnly: true ,maxAge:1000*60});
             res.send(selectedAgent);
           } else if (selectedAgent.etatCompte == "blocked") {
             res.send("you account has been blocked by the admin");
@@ -69,65 +176,8 @@ controller.loginAgent = (req, res) => {
     .catch((error) => {
       res.send(error);
     });
-};
-//admin login
-controller.loginAdmin = (req, res) => {
-  admin
-    .findOne({ email: req.body.email })
-    .then((selectedAgent) => {
-      if (!selectedAgent) {
-        res.send("no account found with this email ");
-      } else {
-        var trusted = bcrypt.compareSync(
-          req.body.password,
-          selectedAgent.password
-        );
-        if (trusted == true) {
-          res.send(selectedAgent);
-        } else {
-          res.send("your password is incorrect");
-        }
-      }
-    })
-    .catch((error) => {
-      res.send(error);
-    });
-};
-//customer login
-controller.loginCustomer = (req, res) => {
-  customer
-    .findOne({ email: req.body.email })
-    .then((selectedCustomer) => {
-      if (!selectedCustomer) {
-        res.send("no account found with this email ");
-      } else {
-        var trusted = bcrypt.compareSync(
-          req.body.password,
-          selectedCustomer.password
-        );
-        if (trusted) {
-          const SECRET_KEY = process.env.SECRET_KEY;
-          const token = jwt.sign(
-            {
-              user_id: selectedCustomer._id, // Change this to the actual user ID field in your agent model
-              username: selectedCustomer.username,
-              email: selectedCustomer.email,
-            },
-            SECRET_KEY,
-            { expiresIn: "1h" } // Token expiration time (adjust as needed)
-          );
-
-          // Set the token in a cookie
-          res.cookie("authToken", token, { httpOnly: true });
-          res.send(selectedCustomer);
-        } else {
-          res.send("your password is incorrect");
-        }
-      }
-    })
-    .catch((error) => {
-      res.send(error);
-    });
+  }
+  
 };
 
 /***************Get Data Functions**************************************/
@@ -171,7 +221,7 @@ controller.getAllProducts = (req, res) => {
   product
     .find({})
     .then((products) => {
-      res.send(products);
+        res.send(products);
     })
     .catch((error) => {
       res.send("an error has oocured when retrieving products from database");
@@ -429,20 +479,21 @@ controller.updateAgentProfile = (req, res) => {
 /*********Product Update Functions*************/
 //update Product
 controller.updateProduct = (req, res) => {
-  product
+  console.log(req.body)
+   product
     .findByIdAndUpdate(req.body.id, {
       productName: req.body.productName,
       productDescription: req.body.productDescription,
       unitPrice: req.body.unitPrice,
-      Image: req.body.productImage,
-      categoryId: req.body.categoryId,
+      productImage: req.body.productPhoto,
+      categoryId: req.body.productCategory,
     })
     .then((updatedProduct) => {
       res.send(updatedProduct);
     })
     .catch((error) => {
       res.send("an error occured while trying to update a product");
-    });
+    }); 
 };
 /*********Category Update Functions*************/
 //update category
@@ -650,8 +701,8 @@ controller.addNewProduct = (req, res) => {
     productName: req.body.productName,
     productDescription: req.body.productDescription,
     unitPrice: req.body.unitPrice,
-    productImage: req.body.productImage,
-    categoryId: req.body.categoryId,
+    productImage: req.body.productPhoto,
+    categoryId: req.body.productCategory,
   });
   newProduct
     .save()
@@ -659,6 +710,7 @@ controller.addNewProduct = (req, res) => {
       res.send(newSavedProduct);
     })
     .catch((error) => {
+      console.log(error)
       res.send("error while trying to save a new product");
     });
 };

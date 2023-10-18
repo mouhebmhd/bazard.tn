@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 import Navbar from '../components/navbar/navbar';
 import './product.css';
 import axios from 'axios';
-import { AiOutlineShoppingCart } from 'react-icons/ai';
-
+import {BsPen} from 'react-icons/bs'
+import { AiOutlineShoppingCart,AiFillDelete } from 'react-icons/ai';
+import {MdAdd } from 'react-icons/md';
+import AddProduct from '../components/addProduct';
+import  UpdateProduct  from '../components/updateProduct';
 class Product extends Component {
   constructor(props) {
     super(props);
@@ -26,12 +29,28 @@ class Product extends Component {
       ],
       products: [],
       allProducts: [],
+      productToUpdate:''
     };
   }
   addToCart(productId){
     axios.post('http://localhost:3030/cart/addToCart/',{productId,customerId:localStorage.getItem('currentUser')})
     .then(response=>{console.log(response)})
     .catch(error=>{console.log(error)})
+  }
+  deleteProduct(productID){
+    axios.delete('http://localhost:3030/product/deleteProduct/'+productID)
+    .then(response=>{
+      console.log(response.data)
+      window.location.reload()
+    })
+    .catch(error=>{
+      console.log(error)
+    })
+
+  }
+  updateProduct(productID)
+  {
+   this.setState({productToUpdate:productID})
   }
   showCategoryProduct(categoryID) {
     axios
@@ -108,8 +127,12 @@ class Product extends Component {
             <h2 className='text-center productsTitle'>Explore Our Products</h2>
             <div className="container-fluid m-2">
               <div className="row d-flex justify-content-center">
-                <div className="searchBar col-sm-12 col-md-6 col-xl-4 col-lg-4">      
-                <input className="form-control mr-sm-2 searchBarInput" type="search" placeholder="Search a product here" aria-label="Search" onChange={event=>{this.generateSearchResult(event)}} /></div>
+                <div className="searchBar col-sm-12 col-md-6 col-xl-4 col-lg-4 d-flex">      
+                <input className="form-control mr-sm-2 searchBarInput " type="search" placeholder="Search a product here" aria-label="Search" onChange={event=>{this.generateSearchResult(event)}} /></div>
+                {(localStorage.getItem('role')=='admin')&&(
+                          <button className=' col-2 btn btn-primary d-flex  addToCart align-items-center ' data-toggle="modal" data-target="#exampleModal">
+                            <MdAdd className='h4 mt-2 mx-2 addButton '></MdAdd> Add New Product
+                          </button>) }
               </div>
             </div>
             <div className='container-fluid m-0 p-0'>
@@ -124,10 +147,20 @@ class Product extends Component {
                         <p className='card-price'>
                           <span className='fw-bold'>Price </span> {product.unitPrice} DT
                         </p>
-                        <div className='col d-flex justify-content-center'>
+                        <div className='col d-flex justify-content-center flex-column row-gap-2'>
+                          {(localStorage.getItem('role')=='customer')&&(
                           <button className='btn btn-primary d-flex  addToCart align-items-center ' onClick={()=>{this.addToCart(product._id)}}>
                             <AiOutlineShoppingCart className='h4 mt-2 mx-2'></AiOutlineShoppingCart> Add to cart
-                          </button>
+                          </button>) }
+                          {(localStorage.getItem('role')=='admin')&&(
+                          <button className='btn btn-primary d-flex  addToCart align-items-center ' onClick={()=>{this.deleteProduct(product._id)}}>
+                            <AiFillDelete className='h4 mt-2 mx-2'></AiFillDelete> Delete Product
+                          </button>) }
+                          {(localStorage.getItem('role')=='admin')&&(
+                          <button className='btn btn-primary d-flex  addToCart updateButton align-items-center ' onClick={()=>{this.updateProduct(product._id)}} data-toggle='modal' data-target='#updateModal'>
+                            <BsPen className='h4 mt-2 mx-2'></BsPen> Update Product
+                          </button>) }
+                          
                         </div>
                       </div>
                     </div>
@@ -137,6 +170,10 @@ class Product extends Component {
             </div>
           </div>
         </div>
+                <AddProduct></AddProduct>
+                <UpdateProduct productID={this.state.productToUpdate}></UpdateProduct>
+
+
       </>
     );
   }

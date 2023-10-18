@@ -77,3 +77,11 @@ margin: 2px auto;
     border-color: #FE441C;
     color: rgba(254, 68, 28,1);
 }
+.addButton
+{
+    color: white !important;
+}
+.updateButton
+{
+    background-color: rgb(43, 130, 244) !important;
+}

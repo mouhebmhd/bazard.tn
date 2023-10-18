@@ -13,7 +13,6 @@ function Login()
   function loginFunction(){
     axios.post(' http://localhost:3030/agent/login/',{email:login,password})
     .then(response=>{
-      console.log(response)
        if(!(response.data._id))
       {
         document.getElementsByClassName('emailFeedBack')[0].classList.remove('d-none');

@@ -10,9 +10,6 @@ route.post('/agent/login/',(req,res)=>{
    controller.loginAgent(req,res);
 });
 //admin login
-route.post(('/admin/login/',(req,res)=>{
-   controller.loginAdmin(req,res);
-}));
 //customer login
 route.post('/customer/login/',(req,res)=>{
    controller.loginCustomer(req,res);
@@ -39,6 +36,10 @@ route.post('/categories/addNewCategory/',(req,res)=>{
    controller.addNewCategory(req,res);
 });
 /****************Get routes***********************/
+//route to get the exact role of an user 
+route.get('/user/hasRole/:id',(req,res)=>{
+   controller.getExactRole(req,res);
+})
 /************Agent routes*************/
 //get all agents
 route.get('/agent/getAllAgents/',(req,res)=>{

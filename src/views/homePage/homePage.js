@@ -7,6 +7,7 @@ import whyChooseUsImage from '../../assets//why-choose-us-img.jpg';
 import Navbar from '../components/navbar/navbar';
 import './homePage.css';
 import 'bootstrap/dist/css/bootstrap.min.css'
+import axios from 'axios';
 
 
 
@@ -16,6 +17,15 @@ class HomePage extends React.Component
     {
         super(props);
     }
+	componentDidMount(){
+		axios.get('http://localhost:3030/user/hasRole/'+localStorage.getItem('currentUser'))
+		.then(response=>{
+			localStorage.setItem('role',response.data)
+		})
+		.catch((error)=>{
+			console.log(error)
+		})
+	}
     render(){
         return (
             <React.Fragment>

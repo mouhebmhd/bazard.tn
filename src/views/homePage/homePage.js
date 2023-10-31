@@ -41,7 +41,7 @@ class HomePage extends React.Component
 							<div className="col-6 col-md-6">
 								<div className="feature">
 									<div className="icon">
-										<img src={truckImage} alt="Image" className="imf-fluid"/>
+										<img src={truckImage} alt="Image" className="img-fluid"/>
 									</div>
 									<h3>Fast &amp; Free Shipping</h3>
 									<p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
@@ -51,7 +51,7 @@ class HomePage extends React.Component
 							<div className="col-6 col-md-6">
 								<div className="feature">
 									<div className="icon">
-										<img src={bagImage} alt="Image" className="imf-fluid"/>
+										<img src={bagImage} alt="Image" className="img-fluid"/>
 									</div>
 									<h3>Easy to Shop</h3>
 									<p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
@@ -61,7 +61,7 @@ class HomePage extends React.Component
 							<div className="col-6 col-md-6">
 								<div className="feature">
 									<div className="icon">
-										<img src={supportImage} alt="Image" className="imf-fluid"/>
+										<img src={supportImage} alt="Image" className="img-fluid"/>
 									</div>
 									<h3>24/7 Support</h3>
 									<p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
@@ -71,7 +71,7 @@ class HomePage extends React.Component
 							<div className="col-6 col-md-6">
 								<div className="feature">
 									<div className="icon">
-										<img src={returnImage} alt="Image" className="imf-fluid" />
+										<img src={returnImage} alt="Image" className="img-fluid" />
 									</div>
 									<h3>Hassle Free Returns</h3>
 									<p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>

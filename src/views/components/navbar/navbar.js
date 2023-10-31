@@ -39,6 +39,14 @@ function Navbar()
          </button>
    <div className="collapse navbar-collapse" id="navbarNav">
      <ul className="navbar-nav d-flex flex-row col mx-5 justify-content-center gap-4 ">
+      
+     {
+        (localStorage.getItem('role')=='admin' ||localStorage.getItem('role')=='agent' ) &&        <li className="nav-item mx-2">
+        <NavLink className="nav-link" style={styleNavLink} to="/dashboard">
+          Dashboard
+        </NavLink>
+      </li>
+       }
        <li className="nav-item mx-2 active">
          <NavLink className="nav-link" style={styleNavLink} to="/home">
            Home
@@ -78,10 +86,10 @@ function Navbar()
        </li>
      </ul>
      <div className="avatar-container d-flex gap-3">
-      {(localStorage.getItem('role')=='customer') && 
+      
        <NavLink style={styleNavLink} className="shopCartIcon" to='/shopCart'> <div className="col h3"><span className='cartCount '>{items}</span><BsCart2></BsCart2> </div></NavLink>
-       &&<NavLink style={styleNavLink} className="profilIcon" to={"/editProfil/"+localStorage.getItem('currentUser')}><div className="col h3"><BsPerson></BsPerson></div></NavLink>
-      }</div>
+      <NavLink style={styleNavLink} className="profilIcon" to={"/editProfil/"+localStorage.getItem('currentUser')}><div className="col h3"><BsPerson></BsPerson></div></NavLink>
+      </div>
    </div>
  </nav>)
 }

@@ -21,8 +21,8 @@ class HomePage extends React.Component {
           <p className='welcomeMessage'>Welcome to Bazard.tn , where shopping meets convenience. Explore our handpicked selection of fashion, tech, and home essentials. Enjoy a seamless, secure shopping experience with expert support. Elevate your lifestyle with us. Start shopping today!</p>
         </div>
         <div className="col-6 d-flex gap-3">
-          <NavLink className='btn shopButton btn-lg text-white' to='/login'>Sign In with Email</NavLink>
-          <NavLink to='#' className='p-0 d-flex gap-3 callToActionButton'><span className='watchButton'><span className='playButton d-flex '><BsFillPlayFill className='icon'></BsFillPlayFill></span></span><span id="buttonText">Watch How To order</span></NavLink>
+          <NavLink className='btn shopButton btn-lg text-white' to='/login'>Sign In as Customer</NavLink>
+          <NavLink className='btn shopButton btn-lg text-white' to='/agent/login'>Sign In as Manager</NavLink>
         </div>
       </div>
         </>

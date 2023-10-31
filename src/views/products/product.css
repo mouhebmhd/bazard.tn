@@ -56,7 +56,7 @@
 {
 width: 16rem;
 height: 16rem;
-margin: 2px auto;
+margin: 2px auto !important;
 }
 .addToCart
 {

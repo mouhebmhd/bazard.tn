@@ -4,10 +4,32 @@ const controller=require('../controller/controller')
 var jwt=require('jsonwebtoken');
 
 
+
+
+/***************Statistics for the dashboard**************/
+route.get('/orders/getOrdersNumber/',(req,res)=>{
+   controller.getOrderCount(req,res);
+});
+route.get('/subscriber/getSubscribersCount/',(req,res)=>{
+   controller.getSubscribersCount(req,res);
+})
+route.get('/customers/getCustomersCount/',(req,res)=>{
+   controller.getDistinctCustomerCount(req,res);
+})
+route.get('/orders/getByStatus/',(req,res)=>{
+   controller.getOrdersByStatus(req,res);
+})
+route.get('/orders/perDateStatistics/',(req,res)=>{
+   controller.getOrderStatisticsForCurrentMonth(req,res);
+})
 /****************login routes***********************/
 //agent login route
 route.post('/agent/login/',(req,res)=>{
    controller.loginAgent(req,res);
+});
+//admin login route
+route.post('/admin/login/',(req,res)=>{
+   controller.authentificateAdmin(req,res);
 });
 //admin login
 //customer login
@@ -84,6 +106,10 @@ route.post('/cart/addToCart/',(req,res)=>{
    controller.addToCart(req,res);
 })
 /************Order routes*************/
+//get all orders to manage 
+route.get('/order/getAllOrdersToManage/',(req,res)=>{
+   controller.getAllOrdersTOManage(req,res);
+})
 route.get('/order/getAllOrders/:customerID',(req,res)=>
 {controller.getAllOrders(req,res);
 })
@@ -119,8 +145,12 @@ route.delete('/cart/removeItem/:itemID',(req,res)=>{
 
 /****************Update routes***********************/
 /************Agent routes*************/
+//activate agent account 
+route.put('/agent/activateAgent/:id',(req,res)=>{
+   controller.activateAgent(req,res);
+});
 //block an agent
-route.put('/agent/blocAgent/:id',(req,res)=>{
+route.put('/agent/blockAgent/:id',(req,res)=>{
    controller.blocAgent(req,res);
 });
 //unblock an agent 
@@ -128,7 +158,7 @@ route.put('/agent/unBlockAgent/:id',(req,res)=>{
    controller.unBlockAgent(req,res);
 });
 //restore agent account
-route.put('/agent/restoreAgent/',(req,res)=>{
+route.put('/agent/restoreAgent/:id',(req,res)=>{
    controller.restoreAgent(req,res);
 })
 //update agent profile

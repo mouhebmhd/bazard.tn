@@ -9,9 +9,11 @@ const product = require("../model/product");
 const category = require("../model/category");
 const jwt = require("jsonwebtoken");
 var controller = {};
+var moment =require('moment')
 var cart = require("../model/cart");
 const { default: axios } = require("axios");
 const { response } = require("express");
+const { promises } = require("dns");
 function createToken(data)
 {
 return   jwt.sign({user:data},process.env.ACCESS_SECRET+data._id,{expiresIn:"24h"});
@@ -28,6 +30,7 @@ function getDate() {
   const formattedDate = formatDate(today);
   return formattedDate;
 }
+
 //get the exact role of an user
 controller.getExactRole=(req,res)=>{
   customer.findById(req.params.id)
@@ -119,7 +122,32 @@ controller.loginCustomer = (req, res) => {
       res.send(error);
     });
 };
+controller.authentificateAdmin=(req,res)=>{
+  admin
+    .findOne({ email: req.body.email })
+    .then((selectedCustomer) => {
+         if (!selectedCustomer) {
+        res.send("no account found with this email ");
+      } else {
+        var trusted = bcrypt.compareSync(
+          req.body.password,
+          selectedCustomer.password
+        );
+        if (trusted) {
+          const token = createToken(selectedCustomer);
 
+          // Set the token in a cookie
+          res.cookie("authToken", token,{httpOnly:true,maxAge:60*1000});
+          res.send(selectedCustomer);
+        } else {
+          res.send("your password is incorrect");
+        }
+      }
+    })
+    .catch((error) => {
+      res.send(error);
+    }); 
+}
 //agent login
 controller.loginAgent = async (req, res) => {
   const selectedAgent=await loginAdmin(req.body.email,req.body.password);
@@ -309,6 +337,16 @@ controller.getCartItems = (req, res) => {
     });
 };
 /*****orders Get Routes*********/
+//getOrdersToManage
+controller.getAllOrdersTOManage=(req,res)=>{
+  order.find({})
+  .then(orders=>{
+    res.send(orders)
+  })
+  .catch(error=>{
+    res.send(error)
+  })
+}
 //get all orders of a specific customer
 controller.getAllOrders=(req,res)=>{
   order.find({customerId:req.params.customerID})
@@ -423,6 +461,17 @@ controller.updateAdminProfile = (req, res) => {
     });
 };
 /*********Agent Update Functions*************/
+//activate agent 
+controller.activateAgent = (req, res) => {
+  agent
+    .findByIdAndUpdate(req.params.id, { etatCompte: "active" })
+    .then((data) => {
+      res.send("agent account blocked successfully");
+    })
+    .catch((error) => {
+      res.send(error);
+    });
+};
 //block agent
 controller.blocAgent = (req, res) => {
   agent
@@ -731,4 +780,74 @@ controller.addNewCategory = (req, res) => {
       res.send("error while trying to save a new category ");
     });
 };
+/*Statistics */
+controller.getOrderCount=(req,res)=>{
+  order.find({})
+  .then(orders=>{
+    res.send(orders.length.toString())
+  })
+  .catch(error=>{res.send(error)});
+}
+controller.getSubscribersCount=(req,res)=>{
+  customer.find({})
+  .then(customers=>{
+    res.send(customers.length.toString())
+  })
+  .catch(error=>{
+    res.send(error)
+  })
+}
+controller.getDistinctCustomerCount = (req, res) => {
+  order.distinct("customerId")
+    .then(customerIDs => {
+      const distinctCustomerCount = customerIDs.length;
+      res.send(distinctCustomerCount.toString());
+    })
+    .catch(error => {
+      res.send(error);
+    });
+}
+controller.getOrdersByStatus= async (req,res)=>{
+  await order.find({})
+  .then(orders=>{
+    const waiting=(orders.filter(element=>{return element.orderStatus=='waiting'}).length)
+    const confirmed=(orders.filter(element=>{return element.orderStatus!='waiting' && element.orderStatus!='canceled'}).length)
+    const shipped=(orders.filter(element=>{return element.orderStatus=='shipped'}).length)
+    res.send({waiting,confirmed,shipped});
+  })
+  .catch(error=>{
+    res.send({waiting:0,shipped:0,confirmed:0})
+  })
+}
+controller.getOrderStatisticsForCurrentMonth = async (req, res) => {
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth();
+  const firstDay = new Date(currentYear, currentMonth, 1);
+  const lastDay = new Date(currentYear, currentMonth + 1, 0);
+
+  const dates = [];
+
+  for (let day = 1; day <= 31; day++) {
+    const date = new Date(currentYear, currentMonth, day);
+    if (date >= firstDay && date <= lastDay) {
+      const dd = day < 10 ? `0${day}` : day;
+      const mm = currentMonth < 9 ? `0${currentMonth + 1}` : currentMonth + 1;
+      const formattedDate = `${dd}/${mm}/${currentYear}`;
+      dates.push(formattedDate);
+    }
+  }
+
+  const promisesArray = dates.map(async (date) => {
+    return await order.countDocuments({ orderDate: date });
+  });
+
+  try {
+    const results = await Promise.all(promisesArray);
+    res.send({dates,stats:results});
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
 module.exports = controller;

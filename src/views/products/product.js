@@ -5,11 +5,14 @@ import axios from 'axios';
 import {BsPen} from 'react-icons/bs'
 import { AiOutlineShoppingCart,AiFillDelete } from 'react-icons/ai';
 import {MdAdd } from 'react-icons/md';
+import {TbZoomReset } from 'react-icons/tb';
 import AddProduct from '../components/addProduct';
 import  UpdateProduct  from '../components/updateProduct';
 class Product extends Component {
   constructor(props) {
-    super(props);
+    super(props);    
+    this.resetFilters = this.resetFilters.bind(this);
+
     this.state = {
       categories: [],
       categoriesIcons: [
@@ -57,17 +60,28 @@ class Product extends Component {
       .get('http://localhost:3030/product/getProductsByCategoryId/' + categoryID.toString())
       .then((response) => {
         this.setState({ products: response.data });
-        this.setState({ allProducts: response.data });
       })
       .catch((error) => {
         console.log(error);
       });
-    console.log(categoryID);
   }
-   generateSearchResult(event)
+  async resetFilters() {
+    await axios
+      .get('http://localhost:3030/product/getAllProducts/')
+      .then((response) => {
+        this.setState({ products: response.data });
+        this.setState({ allProducts: response.data });
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log('Unable to load products');
+      });
+  }
+   generateSearchResult(query)
   {    
-    const request=event.currentTarget.value.toLowerCase();
-    console.log(request)
+    this.setState({products:this.state.allProducts})
+    const request=query.toLowerCase();
+    
     const searchedProducts=this.state.products.filter(product=>{
       return product.productName.toLowerCase().indexOf(request)>-1
     })
@@ -88,6 +102,7 @@ class Product extends Component {
       .get('http://localhost:3030/product/getAllProducts/')
       .then((response) => {
         this.setState({ products: response.data });
+        this.setState({ allProducts: response.data });
         console.log(response.data);
       })
       .catch((error) => {
@@ -128,7 +143,10 @@ class Product extends Component {
             <div className="container-fluid m-2">
               <div className="row d-flex justify-content-center">
                 <div className="searchBar col-sm-12 col-md-6 col-xl-4 col-lg-4 d-flex">      
-                <input className="form-control mr-sm-2 searchBarInput " type="search" placeholder="Search a product here" aria-label="Search" onChange={event=>{this.generateSearchResult(event)}} /></div>
+                <input className="form-control mr-sm-2 searchBarInput " type="search" placeholder="Search a product here" aria-label="Search" onChange={event=>{this.generateSearchResult(event.currentTarget.value)}} /></div>
+                <button className=' col-2 btn btn-primary d-flex  addToCart align-items-center ' onClick={this.resetFilters} >
+                            <TbZoomReset className='h4 mt-2 mx-2 addButton '></TbZoomReset> Reset Search Result
+                          </button>
                 {(localStorage.getItem('role')=='admin')&&(
                           <button className=' col-2 btn btn-primary d-flex  addToCart align-items-center ' data-toggle="modal" data-target="#exampleModal">
                             <MdAdd className='h4 mt-2 mx-2 addButton '></MdAdd> Add New Product

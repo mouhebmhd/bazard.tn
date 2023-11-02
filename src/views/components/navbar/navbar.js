@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import logo from '../../../assets/logo.png';
 import { BsPerson, BsCart2, BsSearch } from 'react-icons/bs';
+import {BiLogOut} from 'react-icons/bi'
 import {NavLink} from 'react-router-dom';
 import axios from 'axios';
 import './navbar.css'
@@ -89,6 +90,7 @@ function Navbar()
       
        <NavLink style={styleNavLink} className="shopCartIcon" to='/shopCart'> <div className="col h3"><span className='cartCount '>{items}</span><BsCart2></BsCart2> </div></NavLink>
       <NavLink style={styleNavLink} className="profilIcon" to={"/editProfil/"+localStorage.getItem('currentUser')}><div className="col h3"><BsPerson></BsPerson></div></NavLink>
+      <NavLink style={styleNavLink} className="profilIcon" to={"/"}><button className='btn btn-outline-warning'><BiLogOut className='h3 m-0'></BiLogOut> Logout</button> </NavLink>
       </div>
    </div>
  </nav>)

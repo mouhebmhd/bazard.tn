@@ -111,7 +111,7 @@ controller.loginCustomer = (req, res) => {
           const token = createToken(selectedCustomer);
 
           // Set the token in a cookie
-          res.cookie("authToken", token,{httpOnly:true,maxAge:60*1000});
+          res.cookie("authToken", token, { httpOnly: false, maxAge: 60 * 1000*60*24 });
           res.send(selectedCustomer);
         } else {
           res.send("your password is incorrect");

@@ -18,18 +18,12 @@ function Order(){
     }
     function isShipped(status,buttonStyle)
     {
-        if(status!='delivred')
-        {
-            return 'd-none'
-        }
-        else
-        {
             return 'btn  shippedButton '+buttonStyle;
-        }
+        
     }
     function isReceivedByTheCustomer(status,buttonStyle)
     {
-        if(status!='received')
+        if(status=='received')
         {
             return 'd-none'
         }
@@ -40,14 +34,9 @@ function Order(){
     }
     function isValidated(status)
     {
-        if((status!='waiting'))
-        {
-            return 'd-none'
-        }
-        else
-        {
+        
             return 'btn btn-outline-primary cancelButton'
-        }
+        
     }
     const [orders,setOrders]=useState('');
     var customerID=localStorage.getItem('currentUser');
@@ -83,10 +72,10 @@ function Order(){
                 <td>{order.shippingAdress}</td>
                 <td>{order.totalPrice}</td>
                 <td className='d-flex gap-1'> 
-                    <button className={isShipped(order.orderStatus,'btn-outline-success')} onClick={()=>{updateOrderStatus(order._id,'received')}}>Mark as received</button>
-                    <button className={isShipped(order.orderStatus,'btn-outline-success')} onClick={()=>{updateOrderStatus(order._id,'delivred')}}>Mark as shipped</button>
-                    <button className={isShipped(order.orderStatus,'btn-outline-success')} onClick={()=>{updateOrderStatus(order._id,'not shipped')}}>Mark as not shipped</button>
-                    <button className={isValidated(order.orderStatus)} onClick={()=>{updateOrderStatus(order._id,'canceled')}}>Cancel order</button>
+                    <button className={isReceivedByTheCustomer(order.orderStatus,'btn-outline-success')+' btn-outline-primary'} onClick={()=>{updateOrderStatus(order._id,'received')}}>Mark as received</button>
+                    <button className={isShipped(order.orderStatus,'btn-outline-success') + ' btn-outline-dark'} onClick={()=>{updateOrderStatus(order._id,'delivred')}}>Mark as shipped</button>
+                    <button className={isShipped(order.orderStatus,'btn-outline-success')+ ' btn-outline-warning'} onClick={()=>{updateOrderStatus(order._id,'not shipped')}}>Mark as not shipped</button>
+                    <button className={isValidated(order.orderStatus)+' btn-outline-danger'} onClick={()=>{updateOrderStatus(order._id,'canceled')}}>Cancel order</button>
                 </td>
             </tr>
         })}

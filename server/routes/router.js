@@ -22,6 +22,9 @@ route.get('/orders/getByStatus/',(req,res)=>{
 route.get('/orders/perDateStatistics/',(req,res)=>{
    controller.getOrderStatisticsForCurrentMonth(req,res);
 })
+route.get('/orders/perDayStatistics/',(req,res)=>{
+   controller.getOrderStatisticsForCurrentWeek(req,res);
+})
 /****************login routes***********************/
 //agent login route
 route.post('/agent/login/',(req,res)=>{

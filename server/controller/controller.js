@@ -820,7 +820,7 @@ controller.getOrdersByStatus= async (req,res)=>{
   })
 }
 controller.getOrderStatisticsForCurrentMonth = async (req, res) => {
-  const currentDate = new Date();
+    const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
   const firstDay = new Date(currentYear, currentMonth, 1);
@@ -838,6 +838,7 @@ controller.getOrderStatisticsForCurrentMonth = async (req, res) => {
     }
   }
 
+
   const promisesArray = dates.map(async (date) => {
     return await order.countDocuments({ orderDate: date });
   });
@@ -847,7 +848,40 @@ controller.getOrderStatisticsForCurrentMonth = async (req, res) => {
     res.send({dates,stats:results});
   } catch (error) {
     res.status(500).send(error);
-  }
+  } 
 };
+controller.getOrderStatisticsForCurrentWeek = async (req, res) => {
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth()-1n;
+  const currentDay = currentDate.getDate();
+  const currentDayOfWeek = currentDate.getDay(); // 0 (Sunday) to 6 (Saturday)
+
+  const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+  const orderStats = {};
+
+  for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
+    const day = daysOfWeek[dayIndex];
+    const daysUntilTargetDay = (dayIndex + 7 - currentDayOfWeek) % 7;
+    
+    const startDate = new Date(currentYear, currentMonth, currentDay + daysUntilTargetDay);
+    const endDate = new Date(currentYear, currentMonth, currentDay + daysUntilTargetDay + 1);
+
+    const formattedStartDate = startDate.toLocaleDateString();
+    const formattedEndDate = endDate.toLocaleDateString();
+
+    try {
+      const count = await order.countDocuments({ orderDate: { $gte: formattedStartDate, $lt: formattedEndDate } });
+      orderStats[day] = count;
+    } catch (error) {
+      res.status(500).send(error);
+      return;
+    }
+  }
+
+  res.send(orderStats);
+};
+
 
 module.exports = controller;

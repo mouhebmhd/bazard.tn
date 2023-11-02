@@ -57,7 +57,7 @@ function Dashboard()
       setDates(response.data.dates);
       setStatistics(response.data.stats);
     })
-  })
+  },[currentUser])
     return (
         <React.Fragment>
         <Navbar />
